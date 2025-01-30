@@ -59,3 +59,16 @@ export const GET = async (resource, token = "NONE") => {
     }
     return await axios.get(URL + resource, headers);
 };
+
+// Metodo DELETE
+export const DELETE = async (resource, token = "NONE") => {
+    let headers = {
+        headers: {
+            "Accept": "application/json",
+        }
+    }
+    if (token !== "NONE") {
+        headers.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return await axios.delete(URL + resource, headers);
+}
