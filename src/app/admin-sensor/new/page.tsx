@@ -61,7 +61,7 @@ export default function NuevaMota() {
     save_mota(data, token).then((info) => {
       if (info && info.code == 200) {
         swal("Registro exitoso", "Mota registrada correctamente", "success");
-        router.push("/admin-sensor");
+        router.push("/admin-sectores");
       } else {
         swal({
           title: "Error",
@@ -75,7 +75,7 @@ export default function NuevaMota() {
   };
 
   const cancelar = () => {
-    router.push("/admin-sensor");
+    router.push("/admin-sectores");
   };
 
   return (

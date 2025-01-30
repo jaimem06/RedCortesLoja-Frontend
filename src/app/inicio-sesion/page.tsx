@@ -17,56 +17,74 @@ export default function Login() {
   const router = useRouter();
 
   const validationSchema = Yup.object().shape({
-    correo: Yup.string().trim().required('El correo es requerido'),
-    contraseña: Yup.string().trim().required('La contraseña es requerida')
+    correo: Yup.string().trim().email('Correo inválido').required('El correo es requerido'),
+    contraseña: Yup.string().trim().required('La contraseña es requerida'),
   });
 
-  const formOptions = { resolver: yupResolver(validationSchema) };
-  const { register, handleSubmit, formState } = useForm<FormData>(formOptions);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: yupResolver(validationSchema),
+  });
 
-  const sendInfo = (data: FormData) => {
-    login(data).then((info) => {
+  const sendInfo = async (data: FormData) => {
+    try {
+      const info = await login(data);
+      
       if (info.code === 200) {
-        console.log(info);
         Cookies.set('token', info.datos.token);
         Cookies.set('user', info.datos.user);
         Cookies.set('external', info.datos.external);
-        console.log(info.datos.user);
+
         swal({
-          title: "Bienvenido",
-          text: info.datos.user,
-          icon: "success",
+          title: 'Bienvenido',
+          text: `Hola, ${info.datos.user}!`,
+          icon: 'success',
           timer: 4000,
           closeOnEsc: true,
         });
+
         router.push('/');
-        router.refresh();
       } else {
         swal({
-          title: "Error",
+          title: 'Error',
           text: info.datos.error,
-          icon: "error",
+          icon: 'error',
           timer: 4000,
           closeOnEsc: true,
         });
-        console.log(info);
-        console.log("NO");
       }
-    });
+    } catch (error) {
+      console.error('Error en login:', error);
+      swal({
+        title: 'Error',
+        text: 'Hubo un problema al iniciar sesión',
+        icon: 'error',
+        timer: 4000,
+        closeOnEsc: true,
+      });
+    }
   };
 
   return (
-      <form onSubmit={handleSubmit(sendInfo)} className="card">
-        <div className="login">Bienvenido</div>
-        <div className="inputBox">
-          <input type="text" required {...register('correo')} />
-          <span className="user">Usuario</span>
-        </div>
-        <div className="inputBox">
-          <input type="password" required {...register('contraseña')} />
-          <span>contraseña</span>
-        </div>
-        <button type="submit" className="btnlogin">Iniciar Sesión</button>
-      </form>
+    <form onSubmit={handleSubmit(sendInfo)} className="card">
+      <div className="login">Bienvenido</div>
+      
+      <div className="inputBox">
+        <input type="email" {...register('correo')} placeholder="Correo electrónico" />
+        {errors.correo && <span className="error">{errors.correo.message}</span>}
+      </div>
+
+      <div className="inputBox">
+        <input type="password" {...register('contraseña')} placeholder="Contraseña" />
+        {errors.contraseña && <span className="error">{errors.contraseña.message}</span>}
+      </div>
+
+      <button type="submit" className="btnlogin" disabled={isSubmitting}>
+        {isSubmitting ? 'Cargando...' : 'Iniciar Sesión'}
+      </button>
+    </form>
   );
 }

@@ -85,7 +85,7 @@ export default function Editar(params) {
           timer: 6000,
           closeOnEsc: true,
         });
-        router.push("/admin-sensor");
+        router.push("/admin-sectores");
       } else {
         swal({
           title: "Error",
@@ -99,7 +99,7 @@ export default function Editar(params) {
   };
 
   const cancelar = () => {
-    router.push("/admin-sensor");
+    router.push("/admin-sectores");
   };
 
   return (

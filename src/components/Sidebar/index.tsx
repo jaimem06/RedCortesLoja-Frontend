@@ -111,7 +111,7 @@ const menuGroups = [
           </svg>
         ),
         label: "Administrar Sectores",
-        route: "/admin-sensor",
+        route: "/admin-sectores",
       },
       {
         icon: (
