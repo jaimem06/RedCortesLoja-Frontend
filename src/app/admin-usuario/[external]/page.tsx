@@ -14,24 +14,15 @@ import FormularioCredenciales from "../c/[ext]/page";
 interface FormData {
   nombre: string;
   apellido: string;
-  correo: string;
 }
 
 const FormularioPersona = () => {
   const router = useRouter();
   const external = useParams().external;
-  const expresion_email = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
   let [persona, setPersona] = useState(null);
-  console.log(external);
-
   const validationSchema = Yup.object().shape({
     nombre: Yup.string().trim().required("El nombre es obligatorio"),
-    apellido: Yup.string().trim().required("El apellido es obligatorio"),
-    correo: Yup.string()
-      .trim()
-      .email()
-      .matches(expresion_email, "Correo incorrecto")
-      .required("El correo es obligatorio"),
+    apellido: Yup.string().trim().required("El apellido es obligatorio")
   });
 
   const formOptions = { resolver: yupResolver(validationSchema) };
@@ -40,20 +31,24 @@ const FormularioPersona = () => {
   const errors = formState.errors;
 
   useEffect(() => {
-    obtener_persona(external).then((res) => {
-      if (res && res.code === 200) {
-        setPersona(res.datos);
-        setValue("nombre", res.datos.nombre);
-        setValue("apellido", res.datos.apellido);
-        setValue("correo", res.datos.cuenta.correo);
-      } else {
-        console.log("Error");
-      }
-    });
+    if (external && typeof external === "string") {
+      obtener_persona(external).then((res) => {
+        if (res && res.code === 200) {
+          setPersona(res.datos);
+          setValue("nombre", res.datos.nombre);
+          setValue("apellido", res.datos.apellido);
+        } else {
+          console.log("Error: Persona no encontrada o problema con la API");
+        }
+      }).catch(error => {
+        console.error("Error obteniendo la persona:", error);
+      });
+    }
   }, [external, setValue]);
+  
 
   const enviar_data = (data: FormData) => {
-    //data["correo"]=persona.cuenta.correo;
+    console.log("Datos a enviar al backend:",data)
     console.log(data);
     modificar_persona(data, external).then((info) => {
       console.log(info);
@@ -69,8 +64,9 @@ const FormularioPersona = () => {
         router.push("/admin-usuario");
         router.refresh();
       } else {
+        console.log("Error al modificar usuario:",info);
         swal({
-          title: "Error",
+          title: "Error :)",
           text: info.datos.error,
           icon: "error",
           timer: 6000,

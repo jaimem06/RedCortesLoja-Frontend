@@ -13,13 +13,13 @@ interface FormData {
   nombre: string;
   apellido: string;
   correo: string;
-  clave: string;
+  contraseña: string;
 }
 
 const FormularioPersona = () => {
   const router = useRouter();
   const expresion_email = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
-  const expresion_clave =
+  const expresion_contraseña =
     /^(?=.*[0-9])(?=.*[!@#~=+?$%^&*])(?=.*[A-Z])(?=.*[a-z])[A-Za-z\d!@#~=+?$%^&*]{8,20}$/;
 
   const validationSchema = Yup.object().shape({
@@ -30,10 +30,10 @@ const FormularioPersona = () => {
       .email()
       .matches(expresion_email, "Correo incorrecto")
       .required("El correo es requerido"),
-    clave: Yup.string()
+      contraseña: Yup.string()
       .trim()
       .matches(
-        expresion_clave,
+        expresion_contraseña,
         "La clave debe tener almenos 8 caracteres alfanumericos, una mayuscula, un numero y un caracter especial",
       )
       .min(8, "La clave debe tener almenos 8 caracteres alfanumericos")
@@ -45,13 +45,42 @@ const FormularioPersona = () => {
   const { register, handleSubmit, formState } = useForm<FormData>(formOptions);
   const errors = formState.errors;
 
+  // const enviar_data = (data: FormData) => {
+  //   guardar_persona(data).then((info) => {
+  //     if (info && info.code === 200) {
+  //       console.log("Respuesta back",info);
+  //       swal({
+  //         title: "Guardado Exitoso",
+  //         text: info.data.tag,
+  //         icon: "success",
+  //         timer: 6000,
+  //         closeOnEsc: true,
+  //       });
+  //       router.push("/admin-usuario");
+  //       router.refresh();
+  //     } else {
+  //       console.log("Respuesta back",info);
+  //       swal({
+  //         title: "Error",
+  //         text: info.datos.error,
+  //         icon: "error",
+  //         timer: 6000,
+  //         closeOnEsc: true,
+  //       });
+  //       console.log(info);
+  //       console.log("NO");
+  //     }
+  //   });
+  // };
+
   const enviar_data = (data: FormData) => {
     guardar_persona(data).then((info) => {
-      if (info && info.code === 200) {
-        console.log(info);
+      const response = info[0];
+      if (response && response.message === "Usuario creado exitosamente") {
+        console.log("Respuesta backend - éxito", info);
         swal({
           title: "Guardado Exitoso",
-          text: info.data.tag,
+          text: response.message,
           icon: "success",
           timer: 6000,
           closeOnEsc: true,
@@ -59,18 +88,20 @@ const FormularioPersona = () => {
         router.push("/admin-usuario");
         router.refresh();
       } else {
+        console.log("Respuesta backend - error", response);
         swal({
           title: "Error",
-          text: info.datos.error,
+          text: info.message || "Error interno del servidor", 
           icon: "error",
           timer: 6000,
           closeOnEsc: true,
         });
-        console.log(info);
-        console.log("NO");
-      }
-    });
+      }
+    });
   };
+
+
+
 
   const cancelar = () => {
     router.push("/admin-usuario");
@@ -239,15 +270,15 @@ const FormularioPersona = () => {
             </span>
             <input
               type="password"
-              id="clave"
+              id="contraseña"
               required
-              {...register("clave")}
+              {...register("contraseña")}
               placeholder="Ingrese su clave"
               className="w-full rounded-[7px] border-[1.5px] border-stroke bg-white py-2.5 pl-12.5 pr-4.5 text-dark focus:border-primary focus-visible:outline-none dark:border-dark-3 dark:bg-dark-2 dark:text-white dark:focus:border-primary"
             />
           </div>
           {errors && (
-            <div className="text-danger mt-1">{errors.clave?.message}</div>
+            <div className="text-danger mt-1">{errors.contraseña?.message}</div>
           )}
         </div>
         <div className="flex justify-end gap-3">
