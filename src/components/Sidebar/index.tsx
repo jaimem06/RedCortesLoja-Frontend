@@ -131,8 +131,29 @@ const menuGroups = [
             />
           </svg>
         ),
+        label: "Historial Cortes",
+        route: "/tabla-corte"
+      },
+      {
+        icon: (
+          <svg
+            className="fill-current"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M12 2C8.13 2 5 5.13 5 9c0 4.95 7 13 7 13s7-8.05 7-13c0-3.87-3.13-7-7-7zM7.75 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.79-3.4 6.86-5 8.88C11.14 15.86 7.75 11.79 7.75 9zM12 16.5c1.38 0 2.5-1.12 2.5-2.5s-1.12-2.5-2.5-2.5-2.5 1.12-2.5 2.5S10.62 16.5 12 16.5z"
+              fill=""
+            />
+          </svg>
+        ),
         label: "Reportar Cortes",
-        route: "/ubicacion-sensor"
+        route: "/crear-corte"
       },
       {
         icon: (

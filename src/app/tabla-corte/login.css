@@ -1,0 +1,30 @@
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 1rem;
+}
+
+.tabla-cortes {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.tabla-cortes th, .tabla-cortes td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.tabla-cortes th {
+  background-color: #007bff;
+  color: white;
+}
+
+.tabla-cortes tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.tabla-cortes tr:hover {
+  background-color: #ddd;
+}
