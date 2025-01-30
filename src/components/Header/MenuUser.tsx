@@ -13,15 +13,6 @@ const MenuSettingsUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   let [usuario, setUsuario] = useState([]);
 
-  useEffect(() => {
-    obtener_persona(external).then((res) => {
-      if (res && res.code === 200) {
-        setUsuario(res.datos);
-      } else {
-        console.log("Error");
-      }
-    });
-  }, [external]);
   //Cerrar sesion
   function cerrarSesionAlert() {
     swal({
