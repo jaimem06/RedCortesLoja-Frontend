@@ -1,7 +1,8 @@
-const URL = 'http://127.0.0.1:5000/';
+//const URL = 'http://127.0.0.1:5000/';
 const URLU = 'https://servicio-dpdubkhed9bac2dk.eastus-01.azurewebsites.net/';
 //const URLU = 'https://serviciodeusuariosyubicaciones-ejc7emcfe4atbvde.canadacentral-01.azurewebsites.net/';
-
+//const URL = 'https://serviciousuariosubicaciones-akc5c9b3b2edetg4.canadacentral-01.azurewebsites.net/';
+const URL = 'https://serviciousuariosubicaciones-akc5c9b3b2edetg4.canadacentral-01.azurewebsites.net/'
 // URL para microservicio de supervisor y notificaciones
 // URLU para microservicio de usuarios y ubicación
 import axios from 'axios';
@@ -59,3 +60,16 @@ export const GET = async (resource, token = "NONE") => {
     }
     return await axios.get(URL + resource, headers);
 };
+
+// Metodo DELETE
+export const DELETE = async (resource, token = "NONE") => {
+    let headers = {
+        headers: {
+            "Accept": "application/json",
+        }
+    }
+    if (token !== "NONE") {
+        headers.headers["Authorization"] = `Bearer ${token}`;
+    }
+    return await axios.delete(URL + resource, headers);
+}
