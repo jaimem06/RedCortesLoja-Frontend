@@ -4,6 +4,7 @@ export async function login(data) {
   let datos = null;
   try {
     datos = await POST('home/login', data);
+    console.log(data);
   } catch (error) {
     if (error.response) {
       return error.response.data;
