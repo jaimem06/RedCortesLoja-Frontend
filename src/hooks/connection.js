@@ -1,6 +1,6 @@
-const URL = 'http://127.0.0.1:5000/';
+//const URL = 'http://127.0.0.1:5000/';
 const URLU = 'https://servicio-dpdubkhed9bac2dk.eastus-01.azurewebsites.net/';
-//const URLU = 'https://serviciodeusuariosyubicaciones-ejc7emcfe4atbvde.canadacentral-01.azurewebsites.net/';
+const URL = 'https://serviciousuariosubicaciones-akc5c9b3b2edetg4.canadacentral-01.azurewebsites.net/';
 
 // URL para microservicio de supervisor y notificaciones
 // URLU para microservicio de usuarios y ubicación
@@ -9,7 +9,7 @@ import axios from 'axios';
 // Método POST para supervisor y notificaciones
 export const POSTU = async (resource, data, token = "NONE") => {
     let headers = {
-        headers: {
+        headers: {  
             "Accept": "application/json",
             "Content-Type": "application/json"
         }
@@ -43,6 +43,7 @@ export const POST = async (resource, data, token = "NONE") => {
     };
     if (token !== "NONE") {
         headers.headers["Authorization"] = `Bearer ${token}`;
+        console.log("DATA OBTENIDA::", data);
     }
     return await axios.post(URL + resource, data, headers);
 };

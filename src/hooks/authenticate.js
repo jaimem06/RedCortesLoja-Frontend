@@ -3,8 +3,8 @@ import { POST } from './connection';
 export async function login(data) {
   let datos = null;
   try {
-    datos = await POST('home/login', data);
-    console.log(data);
+    datos = await POST('home/loginSuper', data);
+    console.log("AQUI",data);
   } catch (error) {
     if (error.response) {
       return error.response.data;

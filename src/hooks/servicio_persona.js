@@ -81,16 +81,17 @@ export async function modificar_estado(external_id) {
     console.log("external_id:", external_id);
     let datos = null;
     try {
-        const token = Cookies.get('token');
-        console.log("token:", token);
-        datos = await GET(`/usuario/actualizar_estado/${external_id}`, token);
-        console.log("datos:", datos);
+      const token = Cookies.get('token');
+      console.log("token:", token);
+      // Cambia GET por POST
+      datos = await POST(`usuario/actualizar_estado/${external_id}`, {}, token);
+      console.log("datos:", datos);
     } catch (error) {
-        console.log("Error:", error.message);
-        return { "code": 500 };
+      console.log("Error:", error.message);
+      return { "code": 500 };
     }
     return datos ? datos.data : { "code": 500 };
-}
+  }
 
 
 

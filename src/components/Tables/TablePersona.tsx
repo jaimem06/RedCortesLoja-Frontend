@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { listar_usuarios,modificar_estado} from "@/hooks/servicio_persona";
+import { listar_usuarios, modificar_estado } from "@/hooks/servicio_persona";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import swal from "sweetalert";
@@ -14,9 +14,8 @@ const TablePersona = () => {
     try {
       const usuarios = await listar_usuarios();
       if (usuarios.data && usuarios.data.code === 200) {
-        
         setData(usuarios.data.datos);
-        console.log("data",usuarios.data.datos);
+        console.log("data", usuarios.data.datos);
       } else {
         console.error("Error", usuarios);
       }
@@ -24,14 +23,11 @@ const TablePersona = () => {
       console.error("Error en listar_usuarios:", error);
     }
   };
+
   useEffect(() => {
     obtener_usuarios();
     console.log("useEffect ejecutado para obtener usuarios.", data);
   }, []);
-
-  function boton_click(external_id_id) {
-    ruta.push("admin-usuario/" + external_id);
-  }
 
   // Función para redireccionar a registrar usuario
   function registrar_usuario() {
@@ -43,7 +39,7 @@ const TablePersona = () => {
     const title = estado ? "¿Está seguro de desactivar la cuenta?" : "¿Está seguro de activar la cuenta?";
     const text = "Esta acción no se puede deshacer";
     const confirmButtonClass = estado ? "btn-danger" : "btn-success";
-  
+
     swal({
       title: title,
       text: text,
@@ -102,6 +98,7 @@ const TablePersona = () => {
       }
     });
   }
+
   function cerrar_sesion(external_id: String) {
     if (ext === external_id) {
       Cookies.remove("external_id");
@@ -190,49 +187,14 @@ const TablePersona = () => {
                       className={`border-[#eee] px-4 py-4 dark:border-dark-3 ${index === data.length - 1 ? "border-b-0" : "border-b"}`}
                      >
                      <div className="flex items-center space-x-3.5">
-                      <button
-                        title= {persona.estado ? "Editar usuario": ""}
-                        className="hover:text-primary"
-                        disabled = {!persona.estado}
-                        onClick={() => boton_click(persona.external_id)}
-                        style={{ 
-                          cursor: !persona.estado
-                          ? "not_allowed"
-                          : "pointer",
-                          opacity: !persona.estado ? "0.5" : "1",
-                        }}
-                      >
-                        <svg
-                          className="fill-current"
-                          width="20"
-                          height="20"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                           d= "M21 2.99984C21.2652 2.73463 21.5196 2.48118 21.7791 2.22068C22.0488 1.95098 22.3186 1.68115 22.5913 1.41016C22.9328 1.06872 23.4328 0.999511 23.8417 1.19682C24.2353 1.38971 24.4827 1.87349 24.4456 2.29245C24.4016 2.78995 24.0933 3.18351 23.6913 3.58551C23.4178 3.85904 23.147 4.12892 22.8784 4.39903C22.6176 4.65815 22.3643 4.91257 22.1002 5.17992L19.75 7.52984L16.47 4.24984L18.82 1.89984C19.0873 1.63584 19.3417 1.38257 19.6008 1.1218C19.8709 0.853131 20.1408 0.582345 20.4144 0.308742C20.8163 -0.0931077 21.2099 -0.401401 21.7074 -0.445373C22.1264 -0.482482 22.6102 -0.235142 22.8031 0.158473C23.0004 0.56738 22.9312 1.06738 22.5897 1.40884C22.3187 1.68153 22.0489 1.95135 21.7791 2.22099C21.5196 2.48047 21.2652 2.73489 21 2.99984ZM2 20.0001L6.0001 22.0001L16.4699 11.5303L12.47 7.5303L2 17.0001V20.0001Z"
-                           fill="currentColor"
-                          />
-                        </svg>
-                        </button>
                         <button
-                         title={
-                          persona.estado
-                          ? "Desactivar cuenta"
-                          : "Activar cuenta"
-                         }
+                         title={persona.estado ? "Desactivar cuenta" : "Activar cuenta"}
                          className="hover:text-primary"
-                         onClick={() => cambiar_estado(persona.external_id,
-                          persona.estado,
-                        )
-                      }
+                         onClick={() => cambiar_estado(persona.external_id, persona.estado)}
                           style={{
                             cursor: "pointer",
                             opacity: "1",
-                            color:persona.estado
-                            ? "#EB5757"
-                            : "#219653",
+                            color: persona.estado ? "#EB5757" : "#219653",
                           }}
                       >
                         <svg
