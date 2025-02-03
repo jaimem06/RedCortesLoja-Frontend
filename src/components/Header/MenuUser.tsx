@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import ClickOutside from "@/components/ClickOutside";
 import Cookies from "js-cookie";
 import { modificar_estado, obtener_persona } from "@/hooks/servicio_persona";
@@ -9,11 +8,30 @@ import swal from "sweetalert";
 
 const MenuSettingsUser = () => {
   const ruta = useRouter();
-  const external = Cookies.get("external");
+  const external_id = Cookies.get("external");
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  let [usuario, setUsuario] = useState([]);
+  const [usuario, setUsuario] = useState(null); // Cambia el estado inicial a un objeto
 
-  //Cerrar sesion
+  // Obtener los datos del usuario al montar el componente
+  useEffect(() => {
+    if (external_id) {
+      obtener_persona(external_id)
+        .then((res) => {
+          console.log("Datos obtenidos:", res.data);
+          if (res && res.status === 200) {
+            setUsuario(res.data.datos); // Asegúrate de que 'datos' es el objeto correcto
+          } else {
+            console.error("Error al obtener datos:", res?.datos?.error);
+          }
+        })
+        .catch((error) => {
+          console.error("Error al obtener datos:", error);
+        });
+    }
+  }, [external_id]);
+  
+
+  // Cerrar sesión
   function cerrarSesionAlert() {
     swal({
       title: "¿Estás seguro?",
@@ -24,53 +42,57 @@ const MenuSettingsUser = () => {
     }).then((aceptar) => {
       if (aceptar) {
         cerrarSesion();
-      } else {
-        return;
       }
     });
   }
 
-  //Desactivar cuenta
+  // Desactivar cuenta
   function desactivarCuentaAlert() {
     swal({
       title: "¿Estás seguro?",
-      text: "Esta accion no se puede deshacer, ¿Deseas desactivar tu cuenta?",
+      text: "Esta acción no se puede deshacer, ¿Deseas desactivar tu cuenta?",
       icon: "warning",
       buttons: ["Cancelar", "Aceptar"],
       dangerMode: true,
     }).then((aceptar) => {
       if (aceptar) {
-        modificar_estado(external).then((res) => {
-          if (res && res.code === 200) {
-            swal({
-              title: "Exito",
-              text: res.data.tag,
-              icon: "success",
-              button: "Aceptar",
-            });
-            cerrarSesion();
-          } else {
+        modificar_estado(external_id)
+          .then((res) => {
+            if (res && res.code === 200) {
+              swal({
+                title: "Éxito",
+                text: res.data.tag,
+                icon: "success",
+                button: "Aceptar",
+              });
+              cerrarSesion();
+            } else {
+              swal({
+                title: "Error",
+                text: res.datos.error || "Error desconocido",
+                icon: "error",
+                button: "Aceptar",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error desactivando la cuenta:", error);
             swal({
               title: "Error",
-              text: res.datos.error,
+              text: "Ocurrió un error al desactivar la cuenta.",
               icon: "error",
               button: "Aceptar",
             });
-            console.log("Cuenta desactivada");
-          }
-        });
-      } else {
-        console.log("Error");
-        return;
+          });
       }
     });
   }
 
+  // Función para cerrar sesión
   function cerrarSesion() {
     Cookies.remove("token");
     Cookies.remove("user");
-    Cookies.remove("external");
-
+    Cookies.remove("external_id");
     ruta.push("/inicio-sesion");
     ruta.refresh();
   }
@@ -84,9 +106,8 @@ const MenuSettingsUser = () => {
       >
         <span className="flex items-center gap-2 font-medium text-dark dark:text-dark-6">
           <span className="hidden lg:block">
-            {usuario.nombre + " " + usuario.apellido}
+            {usuario?.nombre ? `${usuario.nombre} ${usuario.apellido}` : "Cargando..."}
           </span>
-
           <svg
             className={`fill-current duration-200 ease-in ${dropdownOpen && "rotate-180"}`}
             width="20"
@@ -105,7 +126,7 @@ const MenuSettingsUser = () => {
         </span>
       </Link>
 
-      {/* <!-- Dropdown Star --> */}
+      {/* Dropdown */}
       {dropdownOpen && (
         <div
           className={`absolute right-0 mt-7.5 flex w-[280px] flex-col rounded-lg border-[0.5px] border-stroke bg-white shadow-default dark:border-dark-3 dark:bg-gray-dark`}
@@ -113,17 +134,17 @@ const MenuSettingsUser = () => {
           <div className="flex items-center gap-2.5 px-5 pb-5.5 pt-3.5">
             <span className="block">
               <span className="block font-medium text-dark dark:text-white">
-                {usuario.nombre + " " + usuario.apellido}
+                {usuario?.nombre ? `${usuario.nombre} ${usuario.apellido}` : "Cargando..."}
               </span>
               <span className="block font-medium text-dark-5 dark:text-dark-6">
-                {usuario.correo}
+                {usuario?.correo || ""}
               </span>
             </span>
           </div>
           <ul className="flex flex-col gap-1 border-y-[0.5px] border-stroke p-2.5 dark:border-dark-3">
             <li>
               <Link
-                href={"/admin-usuario/" + external}
+                href={"/admin-usuario/" + external_id}
                 className="flex w-full items-center gap-2.5 rounded-[7px] p-2.5 text-sm font-medium text-dark-4 duration-300 ease-in-out hover:bg-gray-2 hover:text-dark dark:text-dark-6 dark:hover:bg-dark-3 dark:hover:text-white lg:text-base"
               >
                 <svg
