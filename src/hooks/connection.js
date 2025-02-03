@@ -2,8 +2,6 @@
 const URLU = 'https://servicio-dpdubkhed9bac2dk.eastus-01.azurewebsites.net/';
 const URL = 'https://serviciousuariosubicaciones-akc5c9b3b2edetg4.canadacentral-01.azurewebsites.net/';
 
-// URL para microservicio de supervisor y notificaciones
-// URLU para microservicio de usuarios y ubicación
 import axios from 'axios';
 
 // Método POST para supervisor y notificaciones
