@@ -1,4 +1,3 @@
-//const URL = 'http://127.0.0.1:5000/';
 const URLU = 'https://servicio-dpdubkhed9bac2dk.eastus-01.azurewebsites.net/';
 const URL = 'https://serviciousuariosubicaciones-akc5c9b3b2edetg4.canadacentral-01.azurewebsites.net/';
 

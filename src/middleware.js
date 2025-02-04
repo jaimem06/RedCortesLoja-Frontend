@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 async function validarTokenBackend(token) {
-  const url = 'http://127.0.0.1:5000/validaciones/token';
+  const url = 'https://serviciousuariosubicaciones-akc5c9b3b2edetg4.canadacentral-01.azurewebsites.net/validaciones/token';
   try {
     const response = await fetch(url, {
       method: 'GET',
@@ -36,9 +36,9 @@ export async function middleware(request) {
 export const config = {
   matcher: [
     '/admin-usuario/:path*', // aplica para todas las rutas que empiecen con /admin-usuario
-    '/admin-sectores',
+/*     '/admin-sectores',
     '/ubicacion-sensor',
-    '/configuracion-perfil',
+    '/configuracion-perfil', */
     '/'
   ],
 };

@@ -6,7 +6,7 @@ export async function validar_token() {
 
     try {
         const token = Cookies.get('token');
-        datos = await GET('validar_token', token);
+        datos = await GET('token', token);
     } catch (error) {
         console.log(error.response.data);
         return { "code": 500 }

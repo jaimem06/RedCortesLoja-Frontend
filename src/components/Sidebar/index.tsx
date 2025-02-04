@@ -128,6 +128,26 @@ const menuGroups = [
         label: "Reportar Cortes",
         route: "/crear-corte"
       },
+      {
+        icon: (
+          <svg
+            className="fill-current"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2C10.3431 2 9 3.34315 9 5V6.708C9 7.42367 8.68393 8.10893 8.12132 8.58579L6.5 10H5C4.44772 10 4 10.4477 4 11V17C4 17.5523 4.44772 18 5 18H19C19.5523 18 20 17.5523 20 17V11C20 10.4477 19.5523 10 19 10H17.5L15.8787 8.58579C15.3161 8.10893 15 7.42367 15 6.708V5C15 3.34315 13.6569 2 12 2ZM12 20C11.4477 20 11 20.4477 11 21C11 21.5523 11.4477 22 12 22C12.5523 22 13 21.5523 13 21C13 20.4477 12.5523 20 12 20Z"
+              fill=""
+            />
+          </svg>
+        ),
+        label: "Enviar Notificaciones",
+        route: "/enviar-noti",
+      }
+      
     ],
   },
 ];
