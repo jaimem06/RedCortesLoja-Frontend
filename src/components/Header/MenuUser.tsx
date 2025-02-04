@@ -17,16 +17,11 @@ const MenuSettingsUser = () => {
     if (external_id) {
       obtener_persona(external_id)
         .then((res) => {
-          console.log("Datos obtenidos:", res.data);
-          if (res && res.status === 200) {
+          if (res && 'status' in res && res.status === 200) {
             setUsuario(res.data.datos); // Asegúrate de que 'datos' es el objeto correcto
-          } else {
-            console.error("Error al obtener datos:", res?.datos?.error);
           }
         })
-        .catch((error) => {
-          console.error("Error al obtener datos:", error);
-        });
+        .catch(() => {});
     }
   }, [external_id]);
   
@@ -63,7 +58,7 @@ const MenuSettingsUser = () => {
                 title: "Éxito",
                 text: res.data.tag,
                 icon: "success",
-                button: "Aceptar",
+                buttons: "Aceptar",
               });
               cerrarSesion();
             } else {
@@ -71,17 +66,16 @@ const MenuSettingsUser = () => {
                 title: "Error",
                 text: res.datos.error || "Error desconocido",
                 icon: "error",
-                button: "Aceptar",
+                buttons: "Aceptar",
               });
             }
           })
           .catch((error) => {
-            console.error("Error desactivando la cuenta:", error);
             swal({
               title: "Error",
               text: "Ocurrió un error al desactivar la cuenta.",
               icon: "error",
-              button: "Aceptar",
+              buttons: "Aceptar",
             });
           });
       }

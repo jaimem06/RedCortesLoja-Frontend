@@ -1,11 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import swal from "sweetalert";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { guardar_persona } from "@/hooks/servicio_persona";
+import { guardar_persona} from "@/hooks/servicio_persona";
+import { obtenerSectores } from "@/hooks/reporteCortes";
 import DefaultLayout from "@/components/Layouts/DefaultLaout";
 import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
 
@@ -14,13 +15,19 @@ interface FormData {
   apellido: string;
   correo: string;
   contraseña: string;
+  ubicacion: string;
 }
 
 const FormularioPersona = () => {
   const router = useRouter();
+  const [sectores, setSectores] = useState<string[]>([]);
   const expresion_email = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
   const expresion_contraseña =
-    /^(?=.*[0-9])(?=.*[!@#~=+?$%^&*])(?=.*[A-Z])(?=.*[a-z])[A-Za-z\d!@#~=+?$%^&*]{8,20}$/;
+    /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Update regex to match backend requirements
+
+  useEffect(() => {
+    obtenerSectores().then((data) => setSectores(data));
+  }, []);
 
   const validationSchema = Yup.object().shape({
     nombre: Yup.string().trim().required("El nombre es requerido"),
@@ -30,54 +37,25 @@ const FormularioPersona = () => {
       .email()
       .matches(expresion_email, "Correo incorrecto")
       .required("El correo es requerido"),
-      contraseña: Yup.string()
+    contraseña: Yup.string()
       .trim()
       .matches(
         expresion_contraseña,
-        "La clave debe tener almenos 8 caracteres alfanumericos, una mayuscula, un numero y un caracter especial",
+        "La clave debe tener al menos 8 caracteres, incluyendo una letra y un número"
       )
-      .min(8, "La clave debe tener almenos 8 caracteres alfanumericos")
-      .max(30, "La clave no debe mas de 30 caracteres alfanumericos")
+      .min(8, "La clave debe tener al menos 8 caracteres")
       .required("La clave es requerida"),
+    ubicacion: Yup.string().trim().required("La ubicación es requerida"),
   });
 
   const formOptions = { resolver: yupResolver(validationSchema) };
   const { register, handleSubmit, formState } = useForm<FormData>(formOptions);
   const errors = formState.errors;
 
-  // const enviar_data = (data: FormData) => {
-  //   guardar_persona(data).then((info) => {
-  //     if (info && info.code === 200) {
-  //       console.log("Respuesta back",info);
-  //       swal({
-  //         title: "Guardado Exitoso",
-  //         text: info.data.tag,
-  //         icon: "success",
-  //         timer: 6000,
-  //         closeOnEsc: true,
-  //       });
-  //       router.push("/admin-usuario");
-  //       router.refresh();
-  //     } else {
-  //       console.log("Respuesta back",info);
-  //       swal({
-  //         title: "Error",
-  //         text: info.datos.error,
-  //         icon: "error",
-  //         timer: 6000,
-  //         closeOnEsc: true,
-  //       });
-  //       console.log(info);
-  //       console.log("NO");
-  //     }
-  //   });
-  // };
-
   const enviar_data = (data: FormData) => {
     guardar_persona(data).then((info) => {
-      const response = info[0];
+      const response = Array.isArray(info) ? info[0] : info;
       if (response && response.message === "Usuario creado exitosamente") {
-        console.log("Respuesta backend - éxito", info);
         swal({
           title: "Guardado Exitoso",
           text: response.message,
@@ -88,20 +66,26 @@ const FormularioPersona = () => {
         router.push("/admin-usuario");
         router.refresh();
       } else {
-        console.log("Respuesta backend - error", response);
+        console.error("Error en la respuesta del servidor:", response);
         swal({
           title: "Error",
-          text: info.message || "Error interno del servidor", 
+          text: response.message || "Error interno del servidor",
           icon: "error",
           timer: 6000,
           closeOnEsc: true,
         });
-      }
-    });
+      }
+    }).catch((error) => {
+      console.error("Error en la solicitud:", error);
+      swal({
+        title: "Error",
+        text: "Error interno del servidor",
+        icon: "error",
+        timer: 6000,
+        closeOnEsc: true,
+      });
+    });
   };
-
-
-
 
   const cancelar = () => {
     router.push("/admin-usuario");
@@ -197,7 +181,7 @@ const FormularioPersona = () => {
               required
               {...register("apellido")}
               placeholder="Ingrese su apellido"
-              className="w-full rounded-[7px] border-[1.5px] border-stroke bg-white py-2.5 pl-12.5 pr-4.5 text-dark focus:border-primary focus-visible:outline-none dark:border-dark-3 dark:bg-dark-2 dark:text-white dark:focus:border-primary"
+              className="w-full rounded-[7px] border-[1.5px] border-stroke bg-white py-2.5 pl-12.5 pr-4.5 text-dark focus:border-primary focus-visible:outline-none dark:border-dark-3 dark:bg-dark-2 dark:focus:border-primary"
             />
           </div>
           {errors && (
@@ -235,7 +219,7 @@ const FormularioPersona = () => {
               required
               {...register("correo")}
               placeholder="Ingrese su correo electronico"
-              className="w-full rounded-[7px] border-[1.5px] border-stroke bg-white py-2.5 pl-12.5 pr-4.5 text-dark focus:border-primary focus-visible:outline-none dark:border-dark-3 dark:bg-dark-2 dark:text-white dark:focus:border-primary"
+              className="w-full rounded-[7px] border-[1.5px] border-stroke bg-white py-2.5 pl-12.5 pr-4.5 text-dark focus:border-primary focus-visible:outline-none dark:border-dark-3 dark:bg-dark-2 dark:focus:border-primary"
             />
           </div>
           {errors && (
@@ -246,9 +230,9 @@ const FormularioPersona = () => {
         <div className="mb-4">
           <label
             className="mb-3 block text-body-sm font-medium text-dark dark:text-white"
-            htmlFor="clave"
+            htmlFor="contrseña"
           >
-            Clave
+            Contraseña
           </label>
           <div className="relative">
             <span className="absolute left-4.5 top-1/2 -translate-y-1/2">
@@ -274,13 +258,58 @@ const FormularioPersona = () => {
               required
               {...register("contraseña")}
               placeholder="Ingrese su clave"
-              className="w-full rounded-[7px] border-[1.5px] border-stroke bg-white py-2.5 pl-12.5 pr-4.5 text-dark focus:border-primary focus-visible:outline-none dark:border-dark-3 dark:bg-dark-2 dark:text-white dark:focus:border-primary"
+              className="w-full rounded-[7px] border-[1.5px] border-stroke bg-white py-2.5 pl-12.5 pr-4.5 text-dark focus:border-primary focus-visible:outline-none dark:border-dark-3 dark:bg-dark-2 dark:focus:border-primary"
             />
           </div>
           {errors && (
             <div className="text-danger mt-1">{errors.contraseña?.message}</div>
           )}
         </div>
+
+        <div className="mb-4">
+          <label
+            className="mb-3 block text-body-sm font-medium text-dark dark:text-white"
+            htmlFor="ubicacion"
+          >
+            Ubicación
+          </label>
+          <div className="relative">
+            <span className="absolute left-4.5 top-1/2 -translate-y-1/2">
+              <svg
+                className="fill-current"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M10 1C6.68629 1 4 3.68629 4 7C4 10.3137 10 19 10 19C10 19 16 10.3137 16 7C16 3.68629 13.3137 1 10 1ZM10 9C8.89543 9 8 8.10457 8 7C8 5.89543 8.89543 5 10 5C11.1046 5 12 5.89543 12 7C12 8.10457 11.1046 9 10 9Z"
+                  fill=""
+                />
+              </svg>
+            </span>
+            <select
+              id="ubicacion"
+              required
+              {...register("ubicacion")}
+              className="w-full rounded-[7px] border-[1.5px] border-stroke bg-white py-2.5 pl-12.5 pr-4.5 text-dark focus:border-primary focus-visible:outline-none dark:border-dark-3 dark:bg-dark-2 dark:focus:border-primary"
+            >
+              <option value="">Seleccione su ubicación</option>
+              {sectores.map((sector) => (
+                <option key={sector} value={sector}>
+                  {sector}
+                </option>
+              ))}
+            </select>
+          </div>
+          {errors.ubicacion && (
+            <div className="text-danger mt-1">{errors.ubicacion?.message}</div>
+          )}
+        </div>
+
         <div className="flex justify-end gap-3">
           <button
             type="button"
