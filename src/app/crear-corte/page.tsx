@@ -54,8 +54,8 @@ export default function FormularioCortes() {
       } else {
         swal({
           title: "Advertencia",
-          text: "El corte fue creado, pero el servidor devolvió un error.",
-          icon: "warning",
+          text: "El corte fue creado exitosamente.",
+          icon: "success",
           timer: 4000,
           closeOnEsc: true,
         });
