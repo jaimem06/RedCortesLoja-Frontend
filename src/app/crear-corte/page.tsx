@@ -53,7 +53,7 @@ export default function FormularioCortes() {
         reset(); // Limpiar el formulario después de enviar
       } else {
         swal({
-          title: "Advertencia",
+          title: "¡Corte registrado!",
           text: "El corte fue creado exitosamente.",
           icon: "success",
           timer: 4000,
@@ -74,7 +74,7 @@ export default function FormularioCortes() {
         swal({
           title: "¡Corte registrado!",
           text: "El corte fue creado exitosamente.",
-          icon: "warning",
+          icon: "success",
           timer: 4000,
           closeOnEsc: true,
         });
