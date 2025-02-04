@@ -73,7 +73,7 @@ export default function FormularioCortes() {
       } else {
         swal({
           title: "¡Corte registrado!",
-          text: "El corte fue creado exitosamente, aunque hubo un error en la respuesta del servidor.",
+          text: "El corte fue creado exitosamente.",
           icon: "warning",
           timer: 4000,
           closeOnEsc: true,
