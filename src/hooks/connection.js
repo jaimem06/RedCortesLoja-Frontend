@@ -1,4 +1,5 @@
 const URLU = 'https://servicio-dpdubkhed9bac2dk.eastus-01.azurewebsites.net/';
+//const URLU = 'http://localhost:5000/';
 const URL = 'https://serviciousuariosubicaciones-akc5c9b3b2edetg4.canadacentral-01.azurewebsites.net/';
 
 import axios from 'axios';

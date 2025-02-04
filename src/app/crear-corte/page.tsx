@@ -13,15 +13,25 @@ interface FormData {
 }
 
 export default function FormularioCortes() {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<FormData>();
   const [sectores, setSectores] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const cargarSectores = async () => {
-      const sectoresObtenidos = await obtenerSectores(); // Llamas a la función que hace la petición
-      setSectores(sectoresObtenidos); // Estableces los sectores en el estado
-      setLoading(false); // Cambias el estado de carga a false
+      try {
+        const sectoresObtenidos = await obtenerSectores();
+        setSectores(sectoresObtenidos);
+      } catch (error) {
+        console.error("Error al obtener sectores:", error);
+        swal({
+          title: "Error",
+          text: "No se pudieron cargar los sectores",
+          icon: "error",
+        });
+      } finally {
+        setLoading(false);
+      }
     };
 
     cargarSectores();
@@ -29,33 +39,37 @@ export default function FormularioCortes() {
 
   const sendInfo = async (data: FormData) => {
     try {
+      console.log("Enviando datos:", data);
       const response = await crearCorte(data);
-      if (response?.status === 201) {
+      console.log("Respuesta del servidor:", response);
+
+      if (response?.status === 201 || response?.status === 200) {
         swal({
-          title: "¡Éxito!",
-          text: response.message,
+          title: "¡Corte registrado!",
+          text: "El corte fue creado exitosamente.",
           icon: "success",
           timer: 4000,
           closeOnEsc: true,
         });
+        reset(); // Limpiar el formulario después de enviar
       } else {
         swal({
           title: "Error",
-          text: response?.message || "Ocurrió un error desconocido",
+          text: response?.message || "No se pudo completar la solicitud.",
           icon: "error",
           timer: 4000,
           closeOnEsc: true,
         });
       }
     } catch (error: any) {
+      console.error("Error durante la creación del corte:", error);
       swal({
         title: "Error",
-        text: error?.response?.data?.error || "No se pudo conectar con el servidor",
+        text: error?.response?.data?.error || "Error interno del servidor",
         icon: "error",
         timer: 4000,
         closeOnEsc: true,
       });
-      console.error("Error durante la creación del corte:", error);
     }
   };
 
