@@ -1,0 +1,33 @@
+.table-auto {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+}
+
+.table-auto th, .table-auto td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.table-auto th {
+  background-color: #e0e0e0;
+  color: #333;
+  font-weight: normal;
+}
+
+.table-auto td {
+  color: #555;
+}
+
+.estado-confirmado {
+  color: #174116;
+  font-weight: bold;
+  text-decoration-color: #006400;
+  border-radius: 12px;
+  padding: 2px 8px;
+  background-color: rgba(0, 100, 0, 0.336);
+  display: inline-block;
+  text-align: center;
+}
+

@@ -144,8 +144,8 @@ const menuGroups = [
             />
           </svg>
         ),
-        label: "Enviar Notificaciones",
-        route: "/enviar-noti",
+        label: "Notificaciones Confirmadas",
+        route: "noti-confirmadas",
       }
       
     ],
